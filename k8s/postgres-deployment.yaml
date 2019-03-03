@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres
+  template:
+    metadata:
+      labels:
+        component: postgres
+    spec:
+      # allocate PVC using the claim configured in 
+      # database-persistent-volume-claim.yaml
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+        - name: postgres
+          image: postgres
+          ports:
+            - containerPort: 5432
+          # mount the allocated PVC above
+          volumeMounts:
+            - name: postgres-storage
+              # specify dir we want to be mounted
+              mountPath: /var/lib/postgresql/data
+              # path which data will be stored on PVC
+              subPath: postgres
+          # configure postgres to not use default password
+          env: 
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
