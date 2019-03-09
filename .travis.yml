@@ -6,6 +6,9 @@ language: generic
 services:
   - docker
 
+node_js:
+  - "11.10.1"
+
 env:
   global:
     # create SHA env var which stores the git sha from the current commit,
