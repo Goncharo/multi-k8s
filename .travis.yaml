@@ -6,6 +6,14 @@ language: generic
 services:
   - docker
 
+env:
+  global:
+    # create SHA env var which stores the git sha from the current commit,
+    # can use this in the deploy.sh script
+    - SHA=$(git rev-parse HEAD)
+    # disable any user prompts from GC
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
 before_install:
   # command created by travis encrypt-file
   - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
@@ -16,3 +24,27 @@ before_install:
   - gcloud components update kubectl
   # login to google cloud using service-account.json file we create
   - gcloud auth activate-service-account --key-file service-account.json
+  # specify the google cloud project ID
+  - gcloud config set project multi-k8s-233415
+  # specify location of the kubernetes cluster on GC
+  - gcloud config set compute/zone us-central1-a
+  # specify name of kubernetes cluster on GC
+  - gcloud container clusters get-credentials multi-cluster
+  # login to docker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  # build test version of multi-client 
+  - docker build -t dgoncharov/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  # run tests
+  - docker run dgoncharov/react-test npm run test -- --coverage
+
+deploy:
+  # tell travis we'll be specifying a custom deployment script
+  provider: script
+  # specifies name of custom script file
+  script: bash ./deploy.sh
+  # only deploy from master branch
+  on: 
+    branch: master
+
