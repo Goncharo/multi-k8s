@@ -1,13 +1,13 @@
 sudo: required
 
 # specify generic language since we're using docker
-language: generic
+language: node_js
 
 services:
   - docker
 
 node_js:
-  - "11.10.1"
+  - "10.15.3"
 
 env:
   global:
