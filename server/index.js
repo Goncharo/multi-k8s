@@ -42,9 +42,9 @@ const redisClient = redis.createClient({
 const redisPublisher = redisClient.duplicate();
 
 // express route handlers
-app.get('/', (req, res) => {
-    res.send('hi');
-});
+//app.get('/', (req, res) => {
+//    res.send('hi');
+//});
 
 // gets all values from postgres
 app.get('/values/all', async (req, res) => {
