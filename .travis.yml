@@ -1,13 +1,10 @@
 sudo: required
 
 # specify generic language since we're using docker
-language: node_js
+language: generic
 
 services:
   - docker
-
-node_js:
-  - "10.15.3"
 
 env:
   global:
@@ -38,9 +35,9 @@ before_install:
   # build test version of multi-client 
   - docker build -t dgoncharov/react-test -f ./client/Dockerfile.dev ./client
 
-script:
+#script:
   # run tests
-  - docker run dgoncharov/react-test npm run test -- --coverage
+  #- docker run dgoncharov/react-test npm run test -- --coverage
 
 deploy:
   # tell travis we'll be specifying a custom deployment script
