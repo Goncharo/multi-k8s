@@ -6,18 +6,18 @@ metadata:
     # use nginx project
     kubernetes.io/ingress.class: nginx
     # strip off all routes in request, ie /api -> /
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
     - http:
         paths:
           # route all / requests to our client pods on port 3000
-          - path: /
+          - path: /?(.*)
             backend:
               serviceName: client-cluster-ip-service
               servicePort: 3000
           # route all /api/ requests to server pods on port 5000
-          - path: /api/
+          - path: /api/?(.*)
             backend:
                 serviceName: server-cluster-ip-service
                 servicePort: 5000

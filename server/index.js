@@ -38,13 +38,14 @@ const redisClient = redis.createClient({
     port: keys.redisPort,
     retry_strategy: () => 1000
 });
+
 // redis requires you to duplicate connection for each listener
 const redisPublisher = redisClient.duplicate();
 
 // express route handlers
-//app.get('/', (req, res) => {
-//    res.send('hi');
-//});
+app.get('/', (req, res) => {
+   res.send('hi');
+});
 
 // gets all values from postgres
 app.get('/values/all', async (req, res) => {
