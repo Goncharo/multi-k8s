@@ -1,0 +1,26 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: goncharo-com-tls
+spec:
+  # name of secret which certificate will be stored in
+  secretName: goncharo-com
+  # cert issuer to use
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  # website name for certificate
+  commonName: goncharo.com
+  # domain names for certificate
+  dnsNames:
+    - goncharo.com
+    - www.goncharo.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        # the domains the verification process will verify
+        domains:
+          - goncharo.com
+          - www.goncharo.com
+
